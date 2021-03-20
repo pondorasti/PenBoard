@@ -1,7 +1,8 @@
 import { useState } from "react"
 import Head from "next/head"
 import { GetServerSideProps } from "next"
-import { Box, Typography } from "@material-ui/core"
+import AddRoundedIcon from "@material-ui/icons/AddRounded"
+import { Box, IconButton, Paper, Typography } from "@material-ui/core"
 import { DragDropContext, Droppable, Draggable, resetServerContext } from "react-beautiful-dnd"
 
 export default function Home() {
@@ -89,9 +90,9 @@ export default function Home() {
                   ...provided.draggableProps.style,
                 }}
               >
-                <Box padding={2} minHeight="48px" sx={{ backgroundColor: snapshot.isDragging ? "#263B4A" : "#456C86" }}>
-                  <Typography variant="body1">{item.title}</Typography>
-                </Box>
+                <Paper sx={{ padding: 2, minHeight: "48px" }}>
+                  <Typography variant="subtitle2">{item.title}</Typography>
+                </Paper>
               </div>
             )
           }}
@@ -112,16 +113,25 @@ export default function Home() {
           <DragDropContext onDragEnd={onDragEnd}>
             {Object.entries(columns).map(([columnId, column]) => (
               <div key={columnId} style={{ margin: 8 }}>
-                <Typography variant="h4">{column.name}</Typography>
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  paddingBottom="8px"
+                  marginBottom="8px"
+                  borderBottom="1px solid rgb(48, 50, 54)"
+                >
+                  <Typography variant="h6">{column.name}</Typography>
+                  <IconButton size="small" color="primary" aria-label="plus icon">
+                    <AddRoundedIcon />
+                  </IconButton>
+                </Box>
                 <Droppable droppableId={columnId} key={columnId}>
                   {(provided, snapshot) => (
                     <div
                       {...provided.droppableProps}
                       ref={provided.innerRef}
                       style={{
-                        background: snapshot.isDraggingOver ? "lightblue" : "lightgrey",
-                        padding: 4,
-                        width: 250,
+                        width: 240,
                         minHeight: 80,
                       }}
                     >
