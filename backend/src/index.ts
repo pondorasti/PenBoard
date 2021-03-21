@@ -1,12 +1,12 @@
 import express, { Request, Response } from "express"
-// import dotenv from "dotenv"
+import * as dotenv from "dotenv"
 // import bodyParser from "body-parser"
 // import cors from "cors"
 // import helmet from "helmet"
 // import router from "./routes"
 
 // Setup
-// dotenv.config()
+dotenv.config()
 const app = express()
 const port = process.env.PORT || 8000 // Database Setup
 
@@ -24,7 +24,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // Start Server
 app.listen(port, () => {
-  console.log(`server is listening on ${port}`)
+  console.log(`Server is listening on ${port}`)
 })
 
 export default app
