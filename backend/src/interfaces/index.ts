@@ -1,2 +1,15 @@
-export { default as IBucket } from "./bucket"
-export { default as ITask } from "./task"
+import { Document } from "mongoose"
+
+export interface IBucket extends Document {
+  name: string
+  index: number
+  tasks: ITask["_id"][]
+}
+
+export interface ITask extends Document {
+  bucket: IBucket["_id"]
+  title: string
+  description?: string
+  storyPoints?: number
+  asignee?: string
+}
