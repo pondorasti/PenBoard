@@ -1,4 +1,4 @@
-import TaskModel from "../models/Task"
+import { TaskModel } from "../models"
 import { ITask } from "../interfaces"
 
 export default class TaskService {
