@@ -17,7 +17,7 @@ app.use(cors())
 
 // Database config
 const mongoUri = process.env.MONGODB_URI || "mongodb://localhost/penboard"
-// add await
+// TODO: add await
 mongoose
   .connect(mongoUri, {
     useNewUrlParser: true,
@@ -33,7 +33,7 @@ mongoose
 // Routes
 app.use(router)
 app.get("/", (req: Request, res: Response) => {
-  res.send("API is working")
+  res.send("API is working, go to /bucket or /task")
 })
 
 // Start Server
