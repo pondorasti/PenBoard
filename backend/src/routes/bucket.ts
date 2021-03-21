@@ -22,7 +22,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     res.json(bucket)
   } catch (err) {
-    res.json({ error: "of" })
+    res.json({ error: err })
   }
 })
 
