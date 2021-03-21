@@ -1,21 +1,17 @@
-import mongoose, { Document, Schema } from "mongoose"
+import mongoose, { Schema, Document } from "mongoose"
+import { ITask } from "../interfaces"
 
-interface ITask extends Document {
-  bucket: string
-  title: string
-  description?: string
-  storyPoints?: number
-  asignee?: string
-}
+const TaskSchema: Schema = new Schema(
+  {
+    bucket: { type: String, required: true },
+    title: { type: String, required: true },
+    description: { type: String },
+    storyPoints: { type: Number },
+    asignee: { type: String },
+  },
+  { timestamps: true }
+)
 
-const TaskSchema: Schema = new Schema({
-  bucket: { type: String, required: true },
-  title: { type: String, required: true },
-  description: { type: String },
-  storyPoints: { type: Number },
-  asignee: { type: String },
-})
-
-const Task = mongoose.model<ITask>("Task", TaskSchema)
+const Task = mongoose.model<ITask & Document>("Task", TaskSchema)
 
 export default Task
