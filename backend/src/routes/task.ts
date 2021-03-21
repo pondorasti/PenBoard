@@ -1,5 +1,5 @@
-import { Request, Response, Router } from "express"
-import TaskService from "../controllers/task"
+import { Router, Request, Response } from "express"
+import { TaskService } from "../controllers"
 
 const router = Router()
 

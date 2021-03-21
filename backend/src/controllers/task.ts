@@ -4,11 +4,13 @@ import { ITask } from "../interfaces"
 export default class TaskService {
   static async getAll(): Promise<{ [tasks: string]: ITask[] }> {
     const tasks = await TaskModel.find({})
+
     return { tasks }
   }
 
   static async get(id: string): Promise<{ [task: string]: ITask }> {
     const task = await TaskModel.findById(id)
+
     return { task }
   }
 
