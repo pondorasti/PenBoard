@@ -1,0 +1,17 @@
+{
+  "extends": [
+    "airbnb-typescript/base",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:prettier/recommended"
+  ],
+  "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/comma-dangle": ["off"],
+    "@typescript-eslint/no-namespace": "off",
+    "no-underscore-dangle": ["off"],
+    "func-names": ["off"]
+  }
+}
