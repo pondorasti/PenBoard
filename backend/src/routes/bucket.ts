@@ -10,7 +10,7 @@ router.get("/", async (req: Request, res: Response) => {
 
     res.json(buckets)
   } catch (err) {
-    res.json({ error: "of" })
+    res.json({ error: err })
   }
 })
 

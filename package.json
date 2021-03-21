@@ -1,0 +1,17 @@
+{
+  "name": "penboard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pondorasti/PenBoard.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pondorasti/PenBoard/issues"
+  },
+  "homepage": "https://github.com/Pondorasti/PenBoard#readme"
+}
