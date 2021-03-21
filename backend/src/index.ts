@@ -3,7 +3,7 @@ import * as dotenv from "dotenv"
 import cors from "cors"
 import helmet from "helmet"
 import mongoose from "mongoose"
-// import router from "./routes"
+import router from "./routes"
 
 // Setup
 dotenv.config()
@@ -31,7 +31,7 @@ mongoose
   })
 
 // Routes
-// app.use(router)
+app.use(router)
 app.get("/", (req: Request, res: Response) => {
   res.send("API is working")
 })
