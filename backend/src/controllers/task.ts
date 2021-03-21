@@ -29,7 +29,8 @@ export default class TaskService {
   }
 
   static async delete(id: string): Promise<{ [task: string]: ITask }> {
-    const task = await TaskModel.findByIdAndDelete(id)
+    const task = await TaskModel.findById(id)
+    await task.deleteOne()
 
     return { task }
   }
