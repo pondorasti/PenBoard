@@ -1,7 +1,7 @@
 import CssBaseline from "@material-ui/core/CssBaseline"
 import { StylesProvider } from "@material-ui/core/"
 import { ThemeProvider } from "@material-ui/core/styles"
-import PenTheme from "../components/PenTheme"
+import PenTheme from "./components/PenTheme"
 import { Provider } from "react-redux"
 import { store } from "./redux/store"
 

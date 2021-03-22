@@ -1,5 +1,6 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { RootState } from "./store"
+import { bucketRef } from "../api"
 import { IBucket, Status } from "../interfaces"
 
 // Types
@@ -13,7 +14,7 @@ interface PenBoardState {
 // Async Thunk
 export const fetchBuckets = createAsyncThunk(`${name}/fetch`, async () => {
   // const response = fetch
-  const response = await fetch("https://penboard.herokuapp.com/bucket")
+  const response = await fetch(bucketRef)
   const data = await response.json()
 
   const bucketsArr: IBucket[] = data["buckets"]
