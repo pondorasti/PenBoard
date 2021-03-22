@@ -45,7 +45,12 @@ export default function TaskCard({ task, index }: ITaskCard): JSX.Element {
             <Skeleton width="100%" height="53px" sx={{ transform: "scale(1)" }} />
           )}
 
-          <TaskDialog task={task} open={dialogState} onClose={handleDialogClose} />
+          <TaskDialog
+            isNewTask={false}
+            task={task}
+            open={dialogState}
+            onClose={handleDialogClose}
+          />
         </div>
       )}
     </Draggable>

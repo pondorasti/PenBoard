@@ -1,18 +1,23 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { RootState } from "./store"
-import { bucketRef } from "../api"
-import { IBucket, Status } from "../interfaces"
+import { bucketRef, taskRef } from "../api"
+import { IBucket, ITask, Status } from "../interfaces"
 
 // Types
 const name = "penBoard"
 type Buckets = { [_id: string]: IBucket }
 interface PenBoardState {
   status: Status
+  needRefresh: boolean
+
+  saveOrUpdateStatus: Status
+  deleteStatus: Status
+
   buckets: Buckets
 }
 
 // Async Thunk
-export const fetchBuckets = createAsyncThunk(`${name}/fetch`, async () => {
+export const fetchBuckets = createAsyncThunk(`${name}/fetchBuckets`, async () => {
   // const response = fetch
   const response = await fetch(bucketRef)
   const data = await response.json()
@@ -27,9 +32,27 @@ export const fetchBuckets = createAsyncThunk(`${name}/fetch`, async () => {
   return bucketsObj
 })
 
+export const createTask = createAsyncThunk(`${name}/create`, async (payload) => {
+  const response = await fetch(taskRef, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  })
+  const data = await response.json()
+
+  return
+})
+
 // Initial State
 const initialState: PenBoardState = {
   status: "idle",
+  needRefresh: false,
+
+  saveOrUpdateStatus: "idle",
+  deleteStatus: "idle",
+
   buckets: {
     "0": {
       _id: "3",
@@ -78,6 +101,7 @@ const penBoardSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(fetchBuckets.pending, (state, action) => {
       state.status = "pending"
+      state.needRefresh = false
     })
     builder.addCase(fetchBuckets.fulfilled, (state, action) => {
       state.status = "succeeded"
@@ -86,12 +110,25 @@ const penBoardSlice = createSlice({
     builder.addCase(fetchBuckets.rejected, (state, action) => {
       state.status = "failed"
     })
+    builder.addCase(createTask.pending, (state, action) => {
+      state.saveOrUpdateStatus = "pending"
+    })
+    builder.addCase(createTask.fulfilled, (state, action) => {
+      state.saveOrUpdateStatus = "idle"
+      state.needRefresh = true
+    })
+    builder.addCase(createTask.rejected, (state, action) => {
+      state.saveOrUpdateStatus = "failed"
+    })
   },
 })
 
 // Selectors
 export const selectBuckets = (state: RootState) => state.penBoard.buckets
 export const selectStatus = (state: RootState) => state.penBoard.status
+export const selectNeedsRefresh = (state: RootState) => state.penBoard.needRefresh
+export const selectSaveOrUpdateStatus = (state: RootState) => state.penBoard.saveOrUpdateStatus
+export const selectDeleteStatus = (state: RootState) => state.penBoard.deleteStatus
 
 // Slice Reducer
 export default penBoardSlice.reducer

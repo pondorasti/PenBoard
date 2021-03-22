@@ -4,7 +4,7 @@ import { GetServerSideProps } from "next"
 import { Box } from "@material-ui/core"
 import { DragDropContext, resetServerContext } from "react-beautiful-dnd"
 import { useAppSelector, useAppDispatch } from "./redux/hooks"
-import { fetchBuckets, selectBuckets } from "./redux/penBoardSlice"
+import { fetchBuckets, selectBuckets, selectNeedsRefresh } from "./redux/penBoardSlice"
 import BucketColumn from "./components/BucketColumn"
 
 export default function Home() {

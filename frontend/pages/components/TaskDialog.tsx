@@ -4,15 +4,21 @@ import {
   Dialog,
   DialogContent,
   Grid,
-  Button,
   DialogActions,
   Autocomplete,
 } from "@material-ui/core"
+import LoadingButton from "@material-ui/lab/LoadingButton"
 import { ITask } from "../interfaces"
-import { useAppSelector } from "../redux/hooks"
-import { selectStatus } from "../redux/penBoardSlice"
+import { useAppSelector, useAppDispatch } from "../redux/hooks"
+import {
+  selectSaveOrUpdateStatus,
+  selectDeleteStatus,
+  selectNeedsRefresh,
+  createTask,
+} from "../redux/penBoardSlice"
 
 interface ITaskDialog {
+  isNewTask: boolean
   task: ITask
   open: boolean
   onClose: () => void
@@ -20,16 +26,35 @@ interface ITaskDialog {
 
 const storyPointOptions = ["1", "2", "3", "5", "8"]
 
-export default function TaskDialog({ task, open, onClose }: ITaskDialog): JSX.Element {
+export default function TaskDialog({ isNewTask, task, open, onClose }: ITaskDialog): JSX.Element {
+  const appDispatch = useAppDispatch()
+  const saveOrUpdateStatus = useAppSelector(selectSaveOrUpdateStatus)
+  const deleteStatus = useAppSelector(selectDeleteStatus)
+
   let initialStoryPoints: string
   if (task.storyPoints) {
     initialStoryPoints = task.storyPoints.toString()
   }
-
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description)
   const [storyPoints, setStoryPoints] = useState(initialStoryPoints)
-  const [asignee, setAsignee] = useState(task.asignee ?? "")
+  const [asignee, setAsignee] = useState(task.asignee)
+
+  function handleDeleteButton() {}
+
+  function handleSaveOrUpdateButton() {
+    const payload = {
+      bucket: task.bucketId,
+      title,
+      description,
+      storyPoints,
+      asignee,
+    }
+    if (isNewTask) {
+      appDispatch(createTask(payload))
+    } else {
+    }
+  }
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
@@ -72,10 +97,23 @@ export default function TaskDialog({ task, open, onClose }: ITaskDialog): JSX.El
           </Grid>
         </Grid>
         <DialogActions sx={{ paddingTop: 3 }}>
-          <Button variant="outlined" color="secondary">
-            Delete
-          </Button>
-          <Button variant="contained">Update</Button>
+          {!isNewTask && (
+            <LoadingButton
+              variant="outlined"
+              pending={deleteStatus !== "idle"}
+              color="secondary"
+              onClick={handleDeleteButton}
+            >
+              Delete
+            </LoadingButton>
+          )}
+          <LoadingButton
+            variant="contained"
+            pending={saveOrUpdateStatus !== "idle"}
+            onClick={handleSaveOrUpdateButton}
+          >
+            {isNewTask ? "Save" : "Update"}
+          </LoadingButton>
         </DialogActions>
       </DialogContent>
     </Dialog>
