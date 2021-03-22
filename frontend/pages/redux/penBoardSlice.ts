@@ -11,7 +11,7 @@ interface PenBoardState {
 // Initial State
 const initialState: PenBoardState = {
   buckets: {
-    "3": {
+    "0": {
       _id: "3",
       name: "ToDo",
       index: 0,
@@ -20,13 +20,22 @@ const initialState: PenBoardState = {
         { _id: "2", title: "Second task", bucketId: "3" },
       ],
     },
-    "4": {
+    "1": {
       _id: "4",
-      name: "Done",
+      name: "In-Progress",
       index: 1,
       tasks: [
         { _id: "3", title: "Third task", bucketId: "4" },
         { _id: "4", title: "Forth task", bucketId: "4" },
+      ],
+    },
+    "2": {
+      _id: "5",
+      name: "Done",
+      index: 2,
+      tasks: [
+        { _id: "5", title: "Third task", bucketId: "4" },
+        { _id: "6", title: "Forth task", bucketId: "4" },
       ],
     },
   },

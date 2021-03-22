@@ -1,16 +1,14 @@
 import { useState } from "react"
 import Head from "next/head"
 import { GetServerSideProps } from "next"
-import AddRoundedIcon from "@material-ui/icons/AddRounded"
-import { Box, IconButton, Paper, Typography } from "@material-ui/core"
-import { DragDropContext, Droppable, Draggable, resetServerContext } from "react-beautiful-dnd"
+import { Box } from "@material-ui/core"
+import { DragDropContext, resetServerContext } from "react-beautiful-dnd"
 import { useAppSelector } from "./redux/hooks"
 import { selectBuckets } from "./redux/penBoardSlice"
-import TaskCard from "./components/TaskCard"
+import BucketColumn from "./components/BucketColumn"
 
 export default function Home() {
   const mockColumns = useAppSelector(selectBuckets)
-
   const [columns, setColumns] = useState(mockColumns)
 
   function onDragEnd(result) {
@@ -31,7 +29,7 @@ export default function Home() {
         ...columns,
         [source.droppableId]: {
           ...column,
-          items: copiedItems,
+          tasks: copiedItems,
         },
       })
     } else {
@@ -58,12 +56,6 @@ export default function Home() {
     }
   }
 
-  function cardsFactory(column) {
-    return column.tasks.map((task, index) => {
-      return <TaskCard key={task._id} task={task} index={index} />
-    })
-  }
-
   return (
     <div>
       <Head>
@@ -74,36 +66,8 @@ export default function Home() {
       <main>
         <Box display="flex" justifyContent="Center" height="100%">
           <DragDropContext onDragEnd={onDragEnd}>
-            {Object.entries(columns).map(([columnId, column]) => (
-              <div key={columnId} style={{ margin: 8 }}>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  paddingBottom="8px"
-                  marginBottom="8px"
-                  borderBottom="1px solid rgb(48, 50, 54)"
-                >
-                  <Typography variant="h6">{column.name}</Typography>
-                  <IconButton size="small" color="primary" aria-label="plus icon">
-                    <AddRoundedIcon />
-                  </IconButton>
-                </Box>
-                <Droppable droppableId={columnId} key={columnId}>
-                  {(provided, snapshot) => (
-                    <div
-                      {...provided.droppableProps}
-                      ref={provided.innerRef}
-                      style={{
-                        width: 240,
-                        minHeight: 80,
-                      }}
-                    >
-                      {cardsFactory(column)}
-                      {provided.placeholder}
-                    </div>
-                  )}
-                </Droppable>
-              </div>
+            {Object.entries(columns).map(([bucketKey, bucket]) => (
+              <BucketColumn key={bucket._id} bucket={bucket} />
             ))}
           </DragDropContext>
         </Box>
