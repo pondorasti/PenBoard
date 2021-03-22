@@ -14,6 +14,13 @@ const PenTheme = createMuiTheme({
   },
   shadows: Array(25).fill("none") as Shadows,
   components: {
+    MuiDialog: {
+      styleOverrides: {
+        paper: {
+          borderRadius: 16,
+        },
+      },
+    },
     MuiTextField: {
       styleOverrides: {
         root: {
