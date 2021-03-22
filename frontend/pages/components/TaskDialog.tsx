@@ -14,6 +14,7 @@ import {
   selectSaveOrUpdateStatus,
   selectDeleteStatus,
   createTask,
+  updateTask,
   deleteTask,
 } from "../redux/penBoardSlice"
 
@@ -31,13 +32,9 @@ export default function TaskDialog({ isNewTask, task, open, onClose }: ITaskDial
   const saveOrUpdateStatus = useAppSelector(selectSaveOrUpdateStatus)
   const deleteStatus = useAppSelector(selectDeleteStatus)
 
-  let initialStoryPoints: string
-  if (task.storyPoints) {
-    initialStoryPoints = task.storyPoints.toString()
-  }
   const [title, setTitle] = useState(task.title)
   const [description, setDescription] = useState(task.description)
-  const [storyPoints, setStoryPoints] = useState(initialStoryPoints)
+  const [storyPoints, setStoryPoints] = useState(task.storyPoints)
   const [asignee, setAsignee] = useState(task.asignee)
 
   function handleDeleteButton() {
@@ -45,16 +42,18 @@ export default function TaskDialog({ isNewTask, task, open, onClose }: ITaskDial
   }
 
   function handleSaveOrUpdateButton() {
-    const payload = {
+    let payload = {
       bucket: task.bucketId,
       title,
       description,
       storyPoints,
       asignee,
     }
+
     if (isNewTask) {
       appDispatch(createTask(payload))
     } else {
+      appDispatch(updateTask({ taskId: task._id, payload }))
     }
   }
 

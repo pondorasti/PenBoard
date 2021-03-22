@@ -45,6 +45,26 @@ export const createTask = createAsyncThunk(`${name}/createTask`, async (payload:
   return
 })
 
+interface UpdateTaskProps {
+  taskId: string
+  payload: any
+}
+export const updateTask = createAsyncThunk(
+  `${name}/updateTask`,
+  async ({ taskId, payload }: UpdateTaskProps) => {
+    const response = await fetch(`${taskRef}/${taskId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+    const data = await response.json()
+
+    return taskId
+  }
+)
+
 export const deleteTask = createAsyncThunk(`${name}/deleteTask`, async (taskId: string) => {
   const response = await fetch(`${taskRef}/${taskId}`, {
     method: "DELETE",
@@ -57,7 +77,7 @@ export const deleteTask = createAsyncThunk(`${name}/deleteTask`, async (taskId: 
 // Initial State
 const initialState: PenBoardState = {
   status: "idle",
-  needRefresh: false,
+  needRefresh: true,
 
   saveOrUpdateStatus: "idle",
   deleteStatus: "idle",
@@ -129,6 +149,17 @@ const penBoardSlice = createSlice({
       state.needRefresh = true
     })
     builder.addCase(createTask.rejected, (state, action) => {
+      state.saveOrUpdateStatus = "failed"
+    })
+    // Update Task
+    builder.addCase(updateTask.pending, (state, action) => {
+      state.saveOrUpdateStatus = "pending"
+    })
+    builder.addCase(updateTask.fulfilled, (state, action) => {
+      state.saveOrUpdateStatus = "idle"
+      state.needRefresh = true
+    })
+    builder.addCase(updateTask.rejected, (state, action) => {
       state.saveOrUpdateStatus = "failed"
     })
     // Delete Task

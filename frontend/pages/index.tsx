@@ -8,13 +8,17 @@ import { fetchBuckets, selectBuckets, selectNeedsRefresh } from "./redux/penBoar
 import BucketColumn from "./components/BucketColumn"
 
 export default function Home() {
+  const appDispatch = useAppDispatch()
+  const penBoardNeedsRefresh = useAppSelector(selectNeedsRefresh)
   const columns = useAppSelector(selectBuckets)
   const [mcolumns, setColumns] = useState(columns)
 
-  const appDispatch = useAppDispatch()
-  useEffect(() => {
+  // useEffect(() => {
+  //   appDispatch(fetchBuckets())
+  // }, [])
+  if (penBoardNeedsRefresh) {
     appDispatch(fetchBuckets())
-  }, [])
+  }
 
   function onDragEnd(result) {
     const { source, destination } = result

@@ -10,7 +10,7 @@ export interface ITask {
   bucketId: string
   title: string
   description?: string
-  storyPoints?: number
+  storyPoints?: string
   asignee?: string
 }
 
