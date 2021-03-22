@@ -1,15 +1,20 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Head from "next/head"
 import { GetServerSideProps } from "next"
 import { Box } from "@material-ui/core"
 import { DragDropContext, resetServerContext } from "react-beautiful-dnd"
-import { useAppSelector } from "./redux/hooks"
-import { selectBuckets } from "./redux/penBoardSlice"
+import { useAppSelector, useAppDispatch } from "./redux/hooks"
+import { fetchBuckets, selectBuckets } from "./redux/penBoardSlice"
 import BucketColumn from "./components/BucketColumn"
 
 export default function Home() {
   const mockColumns = useAppSelector(selectBuckets)
   const [columns, setColumns] = useState(mockColumns)
+
+  const appDispatch = useAppDispatch()
+  useEffect(() => {
+    appDispatch(fetchBuckets())
+  }, [])
 
   function onDragEnd(result) {
     const { source, destination } = result

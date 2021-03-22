@@ -13,3 +13,5 @@ export interface ITask {
   storyPoints?: number
   asignee?: string
 }
+
+export type Status = "idle" | "pending" | "succeeded" | "failed"

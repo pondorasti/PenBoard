@@ -1,6 +1,8 @@
 import { Draggable } from "react-beautiful-dnd"
-import { Paper, Typography } from "@material-ui/core"
+import { Paper, Skeleton, Typography } from "@material-ui/core"
 import { ITask } from "../interfaces"
+import { useAppSelector } from "../redux/hooks"
+import { selectStatus } from "../redux/penBoardSlice"
 
 interface ITaskCard {
   task: ITask
@@ -8,8 +10,10 @@ interface ITaskCard {
 }
 
 export default function TaskCard({ task, index }: ITaskCard): JSX.Element {
+  const status = useAppSelector(selectStatus)
+
   return (
-    <Draggable key={task._id} draggableId={task._id} index={index}>
+    <Draggable draggableId={task._id} index={index}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
@@ -21,9 +25,13 @@ export default function TaskCard({ task, index }: ITaskCard): JSX.Element {
             ...provided.draggableProps.style,
           }}
         >
-          <Paper sx={{ padding: 2, minHeight: "48px" }}>
-            <Typography variant="subtitle2">{task.title}</Typography>
-          </Paper>
+          {status === "succeeded" ? (
+            <Paper sx={{ padding: 2, minHeight: "48px" }}>
+              <Typography variant="subtitle2">{task.title}</Typography>
+            </Paper>
+          ) : (
+            <Skeleton width="100%" height="53px" sx={{ transform: "scale(1)" }} />
+          )}
         </div>
       )}
     </Draggable>
