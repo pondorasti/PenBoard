@@ -12,14 +12,18 @@
     "@emotion/styled": "^11.1.5",
     "@material-ui/core": "^5.0.0-alpha.27",
     "@material-ui/icons": "^5.0.0-alpha.27",
+    "@material-ui/lab": "^5.0.0-alpha.27",
+    "@reduxjs/toolkit": "^1.5.0",
     "next": "10.0.9",
     "react": "17.0.1",
     "react-beautiful-dnd": "^13.0.0",
-    "react-dom": "17.0.1"
+    "react-dom": "17.0.1",
+    "react-redux": "^7.2.2"
   },
   "devDependencies": {
     "@types/node": "^14.14.35",
     "@types/react": "^17.0.3",
+    "@types/react-redux": "^7.1.16",
     "prettier": "^2.2.1",
     "typescript": "^4.2.3"
   }
