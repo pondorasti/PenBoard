@@ -1,21 +1,29 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "./store"
 import { IBucket, Status } from "../interfaces"
 
 // Types
 const name = "penBoard"
+type Buckets = { [_id: string]: IBucket }
 interface PenBoardState {
   status: Status
-  buckets: { [_id: string]: IBucket }
+  buckets: Buckets
 }
 
 // Async Thunk
 export const fetchBuckets = createAsyncThunk(`${name}/fetch`, async () => {
   // const response = fetch
   const response = await fetch("https://penboard.herokuapp.com/bucket")
-  console.log(response)
+  const data = await response.json()
 
-  return ""
+  const bucketsArr: IBucket[] = data["buckets"]
+  const bucketsObj: Buckets = {}
+  for (let item of bucketsArr) {
+    const key = item.index.toString()
+    bucketsObj[key] = item
+  }
+
+  return bucketsObj
 })
 
 // Initial State
@@ -72,6 +80,7 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(fetchBuckets.fulfilled, (state, action) => {
       state.status = "succeeded"
+      state.buckets = action.payload
     })
     builder.addCase(fetchBuckets.rejected, (state, action) => {
       state.status = "failed"

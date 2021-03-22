@@ -8,8 +8,8 @@ import { fetchBuckets, selectBuckets } from "./redux/penBoardSlice"
 import BucketColumn from "./components/BucketColumn"
 
 export default function Home() {
-  const mockColumns = useAppSelector(selectBuckets)
-  const [columns, setColumns] = useState(mockColumns)
+  const columns = useAppSelector(selectBuckets)
+  const [mcolumns, setColumns] = useState(columns)
 
   const appDispatch = useAppDispatch()
   useEffect(() => {

@@ -13,7 +13,7 @@ export default function TaskCard({ task, index }: ITaskCard): JSX.Element {
   const status = useAppSelector(selectStatus)
 
   return (
-    <Draggable draggableId={task._id} index={index}>
+    <Draggable draggableId={task._id} index={index} isDragDisabled={status !== "succeeded"}>
       {(provided, snapshot) => (
         <div
           ref={provided.innerRef}
