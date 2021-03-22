@@ -32,13 +32,22 @@ export const fetchBuckets = createAsyncThunk(`${name}/fetchBuckets`, async () =>
   return bucketsObj
 })
 
-export const createTask = createAsyncThunk(`${name}/create`, async (payload) => {
+export const createTask = createAsyncThunk(`${name}/createTask`, async (payload: any) => {
   const response = await fetch(taskRef, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(payload),
+  })
+  const data = await response.json()
+
+  return
+})
+
+export const deleteTask = createAsyncThunk(`${name}/deleteTask`, async (taskId: string) => {
+  const response = await fetch(`${taskRef}/${taskId}`, {
+    method: "DELETE",
   })
   const data = await response.json()
 
@@ -99,6 +108,7 @@ const penBoardSlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
+    // Fetch Buckets
     builder.addCase(fetchBuckets.pending, (state, action) => {
       state.status = "pending"
       state.needRefresh = false
@@ -110,6 +120,7 @@ const penBoardSlice = createSlice({
     builder.addCase(fetchBuckets.rejected, (state, action) => {
       state.status = "failed"
     })
+    // Create Task
     builder.addCase(createTask.pending, (state, action) => {
       state.saveOrUpdateStatus = "pending"
     })
@@ -119,6 +130,17 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(createTask.rejected, (state, action) => {
       state.saveOrUpdateStatus = "failed"
+    })
+    // Delete Task
+    builder.addCase(deleteTask.pending, (state, action) => {
+      state.deleteStatus = "pending"
+    })
+    builder.addCase(deleteTask.fulfilled, (state, action) => {
+      state.deleteStatus = "idle"
+      state.needRefresh = true
+    })
+    builder.addCase(deleteTask.rejected, (state, action) => {
+      state.deleteStatus = "failed"
     })
   },
 })

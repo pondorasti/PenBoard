@@ -13,8 +13,8 @@ import { useAppSelector, useAppDispatch } from "../redux/hooks"
 import {
   selectSaveOrUpdateStatus,
   selectDeleteStatus,
-  selectNeedsRefresh,
   createTask,
+  deleteTask,
 } from "../redux/penBoardSlice"
 
 interface ITaskDialog {
@@ -40,7 +40,9 @@ export default function TaskDialog({ isNewTask, task, open, onClose }: ITaskDial
   const [storyPoints, setStoryPoints] = useState(initialStoryPoints)
   const [asignee, setAsignee] = useState(task.asignee)
 
-  function handleDeleteButton() {}
+  function handleDeleteButton() {
+    appDispatch(deleteTask(task._id))
+  }
 
   function handleSaveOrUpdateButton() {
     const payload = {
