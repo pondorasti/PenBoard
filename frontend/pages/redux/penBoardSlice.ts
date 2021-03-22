@@ -1,21 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
 import { RootState } from "./store"
-
-interface IBucket {
-  _id: string
-  name: string
-  index: number
-  tasks: ITask[]
-}
-
-interface ITask {
-  _id: string
-  bucketId: string
-  title: string
-  description?: string
-  storyPoints?: number
-  asignee?: string
-}
+import { IBucket } from "../interfaces"
 
 // Types
 const name = "penBoard"
