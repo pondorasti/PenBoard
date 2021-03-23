@@ -1,8 +1,8 @@
 # PenBoard
 
-This is a minimalistic kanban board inspired by Trello and Linear, made 100% with TypeScript.
+This is a minimalistic kanban board inspired by Trello and Linear, made 100% with TypeScript. The codebase is split up into 2 projects, frontend and backend.
 
-The codebase is split up into 2 projects, frontend and backend.
+[Video Submission](https://drive.google.com/file/d/13_Qw6K3spX0HxHlUd8QwjOTRczkGQAP6/view?usp=sharing)
 
 ## Backend
 
