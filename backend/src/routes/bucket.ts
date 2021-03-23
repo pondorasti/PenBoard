@@ -10,7 +10,7 @@ router.get("/", async (req: Request, res: Response) => {
 
     res.json(buckets)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 
@@ -22,7 +22,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     res.json(bucket)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 
@@ -35,7 +35,7 @@ router.put("/:bucketId", async (req: Request, res: Response) => {
 
     res.json(bucket)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 

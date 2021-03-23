@@ -10,7 +10,7 @@ router.get("/", async (req: Request, res: Response) => {
 
     res.json(tasks)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 
@@ -22,7 +22,7 @@ router.get("/:taskId", async (req: Request, res: Response) => {
 
     res.json(task)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 
@@ -34,7 +34,7 @@ router.post("/", async (req: Request, res: Response) => {
 
     res.json(task)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 
@@ -47,7 +47,7 @@ router.put("/:taskId", async (req: Request, res: Response) => {
 
     res.json(task)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 
@@ -59,7 +59,7 @@ router.delete("/:taskId", async (req: Request, res: Response) => {
 
     res.json(task)
   } catch (err) {
-    res.json({ error: err })
+    res.status(500).json({ message: err.message })
   }
 })
 
