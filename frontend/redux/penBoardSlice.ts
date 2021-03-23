@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "./store"
 import { bucketRef, taskRef } from "../api"
 import { IBucket, ITask, Status } from "../interfaces"
@@ -10,6 +10,8 @@ interface PenBoardState {
   status: Status
   needRefresh: boolean
 
+  showDialog: boolean
+  dialogTask: ITask
   saveOrUpdateStatus: Status
   deleteStatus: Status
 
@@ -18,7 +20,6 @@ interface PenBoardState {
 
 // Async Thunk
 export const fetchBuckets = createAsyncThunk(`${name}/fetchBuckets`, async () => {
-  // const response = fetch
   const response = await fetch(bucketRef)
   const data = await response.json()
 
@@ -32,26 +33,34 @@ export const fetchBuckets = createAsyncThunk(`${name}/fetchBuckets`, async () =>
   return bucketsObj
 })
 
+export const asyncUpdateBucketTasks = createAsyncThunk(
+  `${name}/updateBucketTasks`,
+  async ({ bucketId, tasks }: { bucketId: string; tasks: ITask[] }) => {
+    const response = await fetch(`${bucketRef}/${bucketId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(tasks),
+    })
+    const json = await response.json()
+    const bucket: IBucket = json["bucket"]
+
+    return bucket
+  }
+)
+
 export const createTask = createAsyncThunk(`${name}/createTask`, async (payload: any) => {
-  const response = await fetch(taskRef, {
+  await fetch(taskRef, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   })
-  const data = await response.json()
 
   return
 })
 
-interface UpdateTaskProps {
-  taskId: string
-  payload: any
-}
 export const updateTask = createAsyncThunk(
   `${name}/updateTask`,
-  async ({ taskId, payload }: UpdateTaskProps) => {
+  async ({ taskId, payload }: { taskId: string; payload: any }) => {
     const response = await fetch(`${taskRef}/${taskId}`, {
       method: "PUT",
       headers: {
@@ -66,10 +75,9 @@ export const updateTask = createAsyncThunk(
 )
 
 export const deleteTask = createAsyncThunk(`${name}/deleteTask`, async (taskId: string) => {
-  const response = await fetch(`${taskRef}/${taskId}`, {
+  await fetch(`${taskRef}/${taskId}`, {
     method: "DELETE",
   })
-  const data = await response.json()
 
   return
 })
@@ -79,6 +87,8 @@ const initialState: PenBoardState = {
   status: "idle",
   needRefresh: true,
 
+  showDialog: false,
+  dialogTask: { _id: "", title: "", bucketId: "" },
   saveOrUpdateStatus: "idle",
   deleteStatus: "idle",
 
@@ -126,19 +136,40 @@ const initialState: PenBoardState = {
 const penBoardSlice = createSlice({
   name,
   initialState,
-  reducers: {},
+  reducers: {
+    setDialogTask: {
+      reducer(state, action: PayloadAction<ITask>) {
+        state.dialogTask = action.payload
+        state.showDialog = true
+      },
+      prepare(dialogTask: ITask) {
+        return { payload: dialogTask }
+      },
+    },
+    updateBucketTasks: {
+      reducer(state, action: PayloadAction<{ bucketKey: string; tasks: ITask[] }>) {
+        const bucketKey = action.payload.bucketKey
+        state.buckets[bucketKey].tasks = action.payload.tasks
+      },
+      prepare(bucketKey: string, tasks: ITask[]) {
+        return { payload: { bucketKey, tasks } }
+      },
+    },
+    removeDialog(state) {
+      state.showDialog = false
+    },
+  },
   extraReducers: (builder) => {
     // Fetch Buckets
     builder.addCase(fetchBuckets.pending, (state, action) => {
-      state.status = "pending"
+      if (state.status === "idle") {
+        state.status = "pending"
+      }
       state.needRefresh = false
     })
     builder.addCase(fetchBuckets.fulfilled, (state, action) => {
       state.status = "succeeded"
       state.buckets = action.payload
-    })
-    builder.addCase(fetchBuckets.rejected, (state, action) => {
-      state.status = "failed"
     })
     // Create Task
     builder.addCase(createTask.pending, (state, action) => {
@@ -146,10 +177,8 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(createTask.fulfilled, (state, action) => {
       state.saveOrUpdateStatus = "idle"
+      state.showDialog = false
       state.needRefresh = true
-    })
-    builder.addCase(createTask.rejected, (state, action) => {
-      state.saveOrUpdateStatus = "failed"
     })
     // Update Task
     builder.addCase(updateTask.pending, (state, action) => {
@@ -157,10 +186,8 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(updateTask.fulfilled, (state, action) => {
       state.saveOrUpdateStatus = "idle"
+      state.showDialog = false
       state.needRefresh = true
-    })
-    builder.addCase(updateTask.rejected, (state, action) => {
-      state.saveOrUpdateStatus = "failed"
     })
     // Delete Task
     builder.addCase(deleteTask.pending, (state, action) => {
@@ -168,10 +195,8 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(deleteTask.fulfilled, (state, action) => {
       state.deleteStatus = "idle"
+      state.showDialog = false
       state.needRefresh = true
-    })
-    builder.addCase(deleteTask.rejected, (state, action) => {
-      state.deleteStatus = "failed"
     })
   },
 })
@@ -180,8 +205,13 @@ const penBoardSlice = createSlice({
 export const selectBuckets = (state: RootState) => state.penBoard.buckets
 export const selectStatus = (state: RootState) => state.penBoard.status
 export const selectNeedsRefresh = (state: RootState) => state.penBoard.needRefresh
+export const selectShowDialog = (state: RootState) => state.penBoard.showDialog
+export const selectDialogTask = (state: RootState) => state.penBoard.dialogTask
 export const selectSaveOrUpdateStatus = (state: RootState) => state.penBoard.saveOrUpdateStatus
 export const selectDeleteStatus = (state: RootState) => state.penBoard.deleteStatus
+
+// Actions
+export const { setDialogTask, removeDialog, updateBucketTasks } = penBoardSlice.actions
 
 // Slice Reducer
 export default penBoardSlice.reducer

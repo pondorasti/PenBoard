@@ -1,10 +1,8 @@
-import { useState } from "react"
 import { Draggable } from "react-beautiful-dnd"
 import { Paper, Skeleton, Typography } from "@material-ui/core"
-import TaskDialog from "./TaskDialog"
 import { ITask } from "../interfaces"
-import { useAppSelector } from "../redux/hooks"
-import { selectStatus } from "../redux/penBoardSlice"
+import { useAppSelector, useAppDispatch } from "../redux/hooks"
+import { selectStatus, setDialogTask } from "../redux/penBoardSlice"
 
 interface ITaskCard {
   task: ITask
@@ -13,14 +11,9 @@ interface ITaskCard {
 
 export default function TaskCard({ task, index }: ITaskCard): JSX.Element {
   const penBoardStatus = useAppSelector(selectStatus)
-  const [dialogState, setDialogState] = useState(false)
-
+  const appDispatch = useAppDispatch()
   function handleDialogOpen() {
-    setDialogState(true)
-  }
-
-  function handleDialogClose() {
-    setDialogState(false)
+    appDispatch(setDialogTask(task))
   }
 
   return (
@@ -44,13 +37,6 @@ export default function TaskCard({ task, index }: ITaskCard): JSX.Element {
           ) : (
             <Skeleton width="100%" height="53px" sx={{ transform: "scale(1)" }} />
           )}
-
-          <TaskDialog
-            isNewTask={false}
-            task={task}
-            open={dialogState}
-            onClose={handleDialogClose}
-          />
         </div>
       )}
     </Draggable>

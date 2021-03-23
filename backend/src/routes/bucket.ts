@@ -26,4 +26,17 @@ router.post("/", async (req: Request, res: Response) => {
   }
 })
 
+// Update tasks in Bucket by id
+router.put("/:bucketId", async (req: Request, res: Response) => {
+  try {
+    const { bucketId } = req.params
+    const tasks = req.body
+    const bucket = await BucketService.updateTasks(bucketId, tasks)
+
+    res.json(bucket)
+  } catch (err) {
+    res.json({ error: err })
+  }
+})
+
 export default router

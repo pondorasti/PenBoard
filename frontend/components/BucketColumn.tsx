@@ -1,12 +1,10 @@
-import { useState } from "react"
 import { Box, IconButton, Typography } from "@material-ui/core"
 import AddRoundedIcon from "@material-ui/icons/AddRounded"
 import { Droppable } from "react-beautiful-dnd"
 import TaskCard from "./TaskCard"
-import TaskDialog from "./TaskDialog"
 import { IBucket, ITask } from "../interfaces"
-import { fetchBuckets, selectNeedsRefresh } from "../redux/penBoardSlice"
-import { useAppSelector, useAppDispatch } from "../redux/hooks"
+import { setDialogTask } from "../redux/penBoardSlice"
+import { useAppDispatch } from "../redux/hooks"
 
 interface IBucketColumn {
   bucket: IBucket
@@ -14,31 +12,15 @@ interface IBucketColumn {
 
 export default function BucketColumn({ bucket }: IBucketColumn) {
   const appDispatch = useAppDispatch()
-  const penBoardNeedsRefresh = useAppSelector(selectNeedsRefresh)
-
-  const taskTemplate: ITask = { _id: "", title: "", bucketId: bucket._id }
-  const [isActive, setIsActive] = useState(false)
-  const [dialogState, setDialogState] = useState(false)
-  function handleDialogClose() {
-    setDialogState(false)
-  }
   function handleButton() {
-    setDialogState(true)
+    const taskTemplate: ITask = { _id: "", title: "", bucketId: bucket._id }
+    appDispatch(setDialogTask(taskTemplate))
   }
 
   function cardsFactory(column) {
     return column.tasks.map((task, index) => {
       return <TaskCard key={task._id} task={task} index={index} />
     })
-  }
-
-  if (penBoardNeedsRefresh && dialogState) {
-    handleDialogClose()
-    setIsActive(true)
-  } else if (penBoardNeedsRefresh && !dialogState && isActive) {
-    appDispatch(fetchBuckets())
-  } else if (isActive) {
-    setIsActive(false)
   }
 
   return (
@@ -70,7 +52,6 @@ export default function BucketColumn({ bucket }: IBucketColumn) {
           </div>
         )}
       </Droppable>
-      <TaskDialog isNewTask task={taskTemplate} open={dialogState} onClose={handleDialogClose} />
     </div>
   )
 }
