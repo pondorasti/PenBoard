@@ -2,9 +2,9 @@ import { useState } from "react"
 import Head from "next/head"
 import { GetServerSideProps } from "next"
 import { Box } from "@material-ui/core"
-import TaskDialog from "./components/TaskDialog"
+import TaskDialog from "../components/TaskDialog"
 import { DragDropContext, resetServerContext } from "react-beautiful-dnd"
-import { useAppSelector, useAppDispatch } from "./redux/hooks"
+import { useAppSelector, useAppDispatch } from "../redux/hooks"
 import {
   fetchBuckets,
   selectBuckets,
@@ -14,8 +14,8 @@ import {
   removeDialog,
   updateBucketTasks,
   asyncUpdateBucketTasks,
-} from "./redux/penBoardSlice"
-import BucketColumn from "./components/BucketColumn"
+} from "../redux/penBoardSlice"
+import BucketColumn from "../components/BucketColumn"
 
 export default function Home() {
   const appDispatch = useAppDispatch()
