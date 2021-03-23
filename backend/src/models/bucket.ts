@@ -12,7 +12,7 @@ const BucketSchema = new Schema(
 
 BucketSchema.pre("find", function () {
   this.populate("tasks")
-}).pre("findById", function () {
+}).pre("findOne", function () {
   this.populate("tasks")
 })
 
