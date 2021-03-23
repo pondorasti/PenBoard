@@ -1,5 +1,5 @@
 import { BucketModel } from "../models"
-import { IBucket } from "../interfaces"
+import { IBucket, ITask } from "../interfaces"
 
 export default class BucketService {
   static async getAll(): Promise<{ [buckets: string]: IBucket[] }> {
@@ -13,5 +13,12 @@ export default class BucketService {
     const savedBucket = await newBucket.save()
 
     return { bucket: savedBucket }
+  }
+
+  static async updateTasks(id: string, tasks: ITask[]): Promise<{ [bucket: string]: IBucket }> {
+    await BucketModel.findByIdAndUpdate(id, { tasks })
+    const bucket = await BucketModel.findById(id)
+
+    return { bucket }
   }
 }

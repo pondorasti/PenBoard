@@ -10,6 +10,6 @@ export interface ITask extends Document {
   bucket: IBucket["_id"]
   title: string
   description?: string
-  storyPoints?: number
+  storyPoints?: string
   asignee?: string
 }

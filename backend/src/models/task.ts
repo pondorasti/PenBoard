@@ -6,7 +6,7 @@ const TaskSchema: Schema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String },
-    storyPoints: { type: Number },
+    storyPoints: { type: String },
     asignee: { type: String },
 
     bucket: { type: Schema.Types.ObjectId, ref: "Bucker", required: true },
