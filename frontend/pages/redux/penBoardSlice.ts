@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "./store"
 import { bucketRef, taskRef } from "../api"
 import { IBucket, ITask, Status } from "../interfaces"
@@ -10,6 +10,8 @@ interface PenBoardState {
   status: Status
   needRefresh: boolean
 
+  showDialog: boolean
+  dialogTask: ITask
   saveOrUpdateStatus: Status
   deleteStatus: Status
 
@@ -79,6 +81,8 @@ const initialState: PenBoardState = {
   status: "idle",
   needRefresh: true,
 
+  showDialog: false,
+  dialogTask: { _id: "", title: "", bucketId: "" },
   saveOrUpdateStatus: "idle",
   deleteStatus: "idle",
 
@@ -126,7 +130,20 @@ const initialState: PenBoardState = {
 const penBoardSlice = createSlice({
   name,
   initialState,
-  reducers: {},
+  reducers: {
+    setDialogTask: {
+      reducer(state, action: PayloadAction<ITask>) {
+        state.dialogTask = action.payload
+        state.showDialog = true
+      },
+      prepare(dialogTask: ITask) {
+        return { payload: dialogTask }
+      },
+    },
+    removeDialog(state) {
+      state.showDialog = false
+    },
+  },
   extraReducers: (builder) => {
     // Fetch Buckets
     builder.addCase(fetchBuckets.pending, (state, action) => {
@@ -146,6 +163,7 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(createTask.fulfilled, (state, action) => {
       state.saveOrUpdateStatus = "idle"
+      state.showDialog = false
       state.needRefresh = true
     })
     builder.addCase(createTask.rejected, (state, action) => {
@@ -157,6 +175,7 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(updateTask.fulfilled, (state, action) => {
       state.saveOrUpdateStatus = "idle"
+      state.showDialog = false
       state.needRefresh = true
     })
     builder.addCase(updateTask.rejected, (state, action) => {
@@ -168,6 +187,7 @@ const penBoardSlice = createSlice({
     })
     builder.addCase(deleteTask.fulfilled, (state, action) => {
       state.deleteStatus = "idle"
+      state.showDialog = false
       state.needRefresh = true
     })
     builder.addCase(deleteTask.rejected, (state, action) => {
@@ -180,8 +200,13 @@ const penBoardSlice = createSlice({
 export const selectBuckets = (state: RootState) => state.penBoard.buckets
 export const selectStatus = (state: RootState) => state.penBoard.status
 export const selectNeedsRefresh = (state: RootState) => state.penBoard.needRefresh
+export const selectShowDialog = (state: RootState) => state.penBoard.showDialog
+export const selectDialogTask = (state: RootState) => state.penBoard.dialogTask
 export const selectSaveOrUpdateStatus = (state: RootState) => state.penBoard.saveOrUpdateStatus
 export const selectDeleteStatus = (state: RootState) => state.penBoard.deleteStatus
+
+// Actions
+export const { setDialogTask, removeDialog } = penBoardSlice.actions
 
 // Slice Reducer
 export default penBoardSlice.reducer

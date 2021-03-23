@@ -2,20 +2,39 @@ import { useState, useEffect } from "react"
 import Head from "next/head"
 import { GetServerSideProps } from "next"
 import { Box } from "@material-ui/core"
+import TaskDialog from "./components/TaskDialog"
 import { DragDropContext, resetServerContext } from "react-beautiful-dnd"
 import { useAppSelector, useAppDispatch } from "./redux/hooks"
-import { fetchBuckets, selectBuckets, selectNeedsRefresh } from "./redux/penBoardSlice"
+import {
+  fetchBuckets,
+  selectBuckets,
+  selectNeedsRefresh,
+  selectShowDialog,
+  selectDialogTask,
+  removeDialog,
+} from "./redux/penBoardSlice"
 import BucketColumn from "./components/BucketColumn"
 
 export default function Home() {
   const appDispatch = useAppDispatch()
   const penBoardNeedsRefresh = useAppSelector(selectNeedsRefresh)
+
+  const [mountDialog, setMountDialog] = useState(false)
+  const showDialog = useAppSelector(selectShowDialog)
+  const dialogTask = useAppSelector(selectDialogTask)
+
+  if (showDialog && !mountDialog) {
+    setMountDialog(true)
+  } else if (!showDialog && mountDialog) {
+    setMountDialog(false)
+  }
+
+  function handleDialogClose() {
+    appDispatch(removeDialog())
+  }
   const columns = useAppSelector(selectBuckets)
   const [mcolumns, setColumns] = useState(columns)
 
-  // useEffect(() => {
-  //   appDispatch(fetchBuckets())
-  // }, [])
   if (penBoardNeedsRefresh) {
     appDispatch(fetchBuckets())
   }
@@ -79,6 +98,14 @@ export default function Home() {
               <BucketColumn key={bucket._id} bucket={bucket} />
             ))}
           </DragDropContext>
+          {mountDialog && (
+            <TaskDialog
+              isNewTask={dialogTask._id === ""}
+              task={dialogTask}
+              open={showDialog}
+              onClose={handleDialogClose}
+            />
+          )}
         </Box>
       </main>
     </div>
