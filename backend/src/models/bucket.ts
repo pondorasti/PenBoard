@@ -12,6 +12,8 @@ const BucketSchema = new Schema(
 
 BucketSchema.pre("find", function () {
   this.populate("tasks")
+}).pre("findById", function () {
+  this.populate("tasks")
 })
 
 const BucketModel = mongoose.model<IBucket>("Bucket", BucketSchema)
