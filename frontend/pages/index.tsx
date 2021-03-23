@@ -80,7 +80,7 @@ export default function Home() {
       </Head>
 
       <main>
-        <Box display="flex" justifyContent="Center" height="100%">
+        <Box display="flex" justifyContent="center" height="100%" padding={2}>
           <DragDropContext onDragEnd={onDragEnd}>
             {Object.entries(columns).map(([bucketKey, bucket]) => (
               <BucketColumn key={bucket._id} bucket={bucket} />
