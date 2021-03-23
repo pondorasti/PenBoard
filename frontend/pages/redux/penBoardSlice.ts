@@ -20,7 +20,6 @@ interface PenBoardState {
 
 // Async Thunk
 export const fetchBuckets = createAsyncThunk(`${name}/fetchBuckets`, async () => {
-  // const response = fetch
   const response = await fetch(bucketRef)
   const data = await response.json()
 
@@ -34,26 +33,34 @@ export const fetchBuckets = createAsyncThunk(`${name}/fetchBuckets`, async () =>
   return bucketsObj
 })
 
+export const asyncUpdateBucketTasks = createAsyncThunk(
+  `${name}/updateBucketTasks`,
+  async ({ bucketId, tasks }: { bucketId: string; tasks: ITask[] }) => {
+    const response = await fetch(`${bucketRef}/${bucketId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(tasks),
+    })
+    const json = await response.json()
+    const bucket: IBucket = json["bucket"]
+
+    return bucket
+  }
+)
+
 export const createTask = createAsyncThunk(`${name}/createTask`, async (payload: any) => {
-  const response = await fetch(taskRef, {
+  await fetch(taskRef, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload),
   })
-  const data = await response.json()
 
   return
 })
 
-interface UpdateTaskProps {
-  taskId: string
-  payload: any
-}
 export const updateTask = createAsyncThunk(
   `${name}/updateTask`,
-  async ({ taskId, payload }: UpdateTaskProps) => {
+  async ({ taskId, payload }: { taskId: string; payload: any }) => {
     const response = await fetch(`${taskRef}/${taskId}`, {
       method: "PUT",
       headers: {
@@ -68,10 +75,9 @@ export const updateTask = createAsyncThunk(
 )
 
 export const deleteTask = createAsyncThunk(`${name}/deleteTask`, async (taskId: string) => {
-  const response = await fetch(`${taskRef}/${taskId}`, {
+  await fetch(`${taskRef}/${taskId}`, {
     method: "DELETE",
   })
-  const data = await response.json()
 
   return
 })
@@ -140,6 +146,15 @@ const penBoardSlice = createSlice({
         return { payload: dialogTask }
       },
     },
+    updateBucketTasks: {
+      reducer(state, action: PayloadAction<{ bucketKey: string; tasks: ITask[] }>) {
+        const bucketKey = action.payload.bucketKey
+        state.buckets[bucketKey].tasks = action.payload.tasks
+      },
+      prepare(bucketKey: string, tasks: ITask[]) {
+        return { payload: { bucketKey, tasks } }
+      },
+    },
     removeDialog(state) {
       state.showDialog = false
     },
@@ -147,15 +162,14 @@ const penBoardSlice = createSlice({
   extraReducers: (builder) => {
     // Fetch Buckets
     builder.addCase(fetchBuckets.pending, (state, action) => {
-      state.status = "pending"
+      if (state.status === "idle") {
+        state.status = "pending"
+      }
       state.needRefresh = false
     })
     builder.addCase(fetchBuckets.fulfilled, (state, action) => {
       state.status = "succeeded"
       state.buckets = action.payload
-    })
-    builder.addCase(fetchBuckets.rejected, (state, action) => {
-      state.status = "failed"
     })
     // Create Task
     builder.addCase(createTask.pending, (state, action) => {
@@ -166,9 +180,6 @@ const penBoardSlice = createSlice({
       state.showDialog = false
       state.needRefresh = true
     })
-    builder.addCase(createTask.rejected, (state, action) => {
-      state.saveOrUpdateStatus = "failed"
-    })
     // Update Task
     builder.addCase(updateTask.pending, (state, action) => {
       state.saveOrUpdateStatus = "pending"
@@ -178,9 +189,6 @@ const penBoardSlice = createSlice({
       state.showDialog = false
       state.needRefresh = true
     })
-    builder.addCase(updateTask.rejected, (state, action) => {
-      state.saveOrUpdateStatus = "failed"
-    })
     // Delete Task
     builder.addCase(deleteTask.pending, (state, action) => {
       state.deleteStatus = "pending"
@@ -189,9 +197,6 @@ const penBoardSlice = createSlice({
       state.deleteStatus = "idle"
       state.showDialog = false
       state.needRefresh = true
-    })
-    builder.addCase(deleteTask.rejected, (state, action) => {
-      state.deleteStatus = "failed"
     })
   },
 })
@@ -206,7 +211,7 @@ export const selectSaveOrUpdateStatus = (state: RootState) => state.penBoard.sav
 export const selectDeleteStatus = (state: RootState) => state.penBoard.deleteStatus
 
 // Actions
-export const { setDialogTask, removeDialog } = penBoardSlice.actions
+export const { setDialogTask, removeDialog, updateBucketTasks } = penBoardSlice.actions
 
 // Slice Reducer
 export default penBoardSlice.reducer

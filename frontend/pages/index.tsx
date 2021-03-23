@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Head from "next/head"
 import { GetServerSideProps } from "next"
 import { Box } from "@material-ui/core"
@@ -12,6 +12,8 @@ import {
   selectShowDialog,
   selectDialogTask,
   removeDialog,
+  updateBucketTasks,
+  asyncUpdateBucketTasks,
 } from "./redux/penBoardSlice"
 import BucketColumn from "./components/BucketColumn"
 
@@ -33,7 +35,6 @@ export default function Home() {
     appDispatch(removeDialog())
   }
   const columns = useAppSelector(selectBuckets)
-  const [mcolumns, setColumns] = useState(columns)
 
   if (penBoardNeedsRefresh) {
     appDispatch(fetchBuckets())
@@ -52,14 +53,8 @@ export default function Home() {
       const [removed] = copiedItems.splice(source.index, 1)
       copiedItems.splice(destination.index, 0, removed)
 
-      // Update
-      setColumns({
-        ...columns,
-        [source.droppableId]: {
-          ...column,
-          tasks: copiedItems,
-        },
-      })
+      appDispatch(asyncUpdateBucketTasks({ bucketId: column._id, tasks: copiedItems }))
+      appDispatch(updateBucketTasks(source.droppableId, copiedItems))
     } else {
       // Moving card to different column
       const sourceColumn = columns[source.droppableId]
@@ -69,18 +64,11 @@ export default function Home() {
       const [removed] = sourceItems.splice(source.index, 1)
       destItems.splice(destination.index, 0, removed)
 
-      // Update
-      setColumns({
-        ...columns,
-        [source.droppableId]: {
-          ...sourceColumn,
-          tasks: sourceItems,
-        },
-        [destination.droppableId]: {
-          ...destColumn,
-          tasks: destItems,
-        },
-      })
+      appDispatch(asyncUpdateBucketTasks({ bucketId: sourceColumn._id, tasks: sourceItems }))
+      appDispatch(updateBucketTasks(source.droppableId, sourceItems))
+
+      appDispatch(asyncUpdateBucketTasks({ bucketId: destColumn._id, tasks: destItems }))
+      appDispatch(updateBucketTasks(destination.droppableId, destItems))
     }
   }
 
