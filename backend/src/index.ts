@@ -8,7 +8,7 @@ import router from "./routes"
 // Setup
 dotenv.config()
 const app = express()
-const port = process.env.PORT || 8000 // Database Setup
+const port = process.env.NODE_DOCKER_PORT || 8000 // Database Setup
 
 // Middlewares
 app.use(express.json())
@@ -16,7 +16,9 @@ app.use(helmet())
 app.use(cors())
 
 // Database config
-const mongoUri = process.env.MONGODB_URI || "mongodb://localhost/penboard"
+const { DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME } = process.env
+const mongoUri = `mongodb://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?authSource=admin`
+
 // TODO: add await
 mongoose
   .connect(mongoUri, {
