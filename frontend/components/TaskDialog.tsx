@@ -1,13 +1,6 @@
 import { useState } from "react"
-import {
-  TextField,
-  Dialog,
-  DialogContent,
-  Grid,
-  DialogActions,
-  Autocomplete,
-} from "@material-ui/core"
-import LoadingButton from "@material-ui/lab/LoadingButton"
+import { TextField, Dialog, DialogContent, Grid, DialogActions, Autocomplete } from "@mui/material"
+import LoadingButton from "@mui/lab/LoadingButton"
 import { ITask } from "../interfaces"
 import { useAppSelector, useAppDispatch } from "../redux/hooks"
 import {
@@ -101,7 +94,7 @@ export default function TaskDialog({ isNewTask, task, open, onClose }: ITaskDial
           {!isNewTask && (
             <LoadingButton
               variant="outlined"
-              pending={deleteStatus !== "idle"}
+              loading={deleteStatus !== "idle"}
               color="secondary"
               onClick={handleDeleteButton}
             >
@@ -110,7 +103,7 @@ export default function TaskDialog({ isNewTask, task, open, onClose }: ITaskDial
           )}
           <LoadingButton
             variant="contained"
-            pending={saveOrUpdateStatus !== "idle"}
+            loading={saveOrUpdateStatus !== "idle"}
             onClick={handleSaveOrUpdateButton}
           >
             {isNewTask ? "Save" : "Update"}

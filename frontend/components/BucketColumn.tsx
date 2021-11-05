@@ -1,5 +1,5 @@
-import { Box, IconButton, Typography } from "@material-ui/core"
-import AddRoundedIcon from "@material-ui/icons/AddRounded"
+import { Box, IconButton, Typography } from "@mui/material"
+import AddRoundedIcon from "@mui/icons-material/AddRounded"
 import { Droppable } from "react-beautiful-dnd"
 import TaskCard from "./TaskCard"
 import { IBucket, ITask } from "../interfaces"

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import Head from "next/head"
 import { GetServerSideProps } from "next"
-import { Box } from "@material-ui/core"
+import { Box } from "@mui/material"
 import TaskDialog from "../components/TaskDialog"
 import { DragDropContext, resetServerContext } from "react-beautiful-dnd"
 import { useAppSelector, useAppDispatch } from "../redux/hooks"

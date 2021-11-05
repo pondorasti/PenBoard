@@ -1,7 +1,7 @@
-import { createMuiTheme } from "@material-ui/core/styles"
-import { Shadows } from "@material-ui/core/styles/shadows"
+import { createTheme } from "@mui/material/styles"
+import { Shadows } from "@mui/styles/legacy"
 
-const PenTheme = createMuiTheme({
+const PenTheme = createTheme({
   palette: {
     mode: "dark",
     primary: {
@@ -18,6 +18,7 @@ const PenTheme = createMuiTheme({
       styleOverrides: {
         paper: {
           borderRadius: 16,
+          backgroundImage: "none",
         },
       },
     },

@@ -1,5 +1,5 @@
 import { Draggable } from "react-beautiful-dnd"
-import { Paper, Skeleton, Typography } from "@material-ui/core"
+import { Paper, Skeleton, Typography } from "@mui/material"
 import { ITask } from "../interfaces"
 import { useAppSelector, useAppDispatch } from "../redux/hooks"
 import { selectStatus, setDialogTask } from "../redux/penBoardSlice"
