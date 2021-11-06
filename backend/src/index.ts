@@ -4,6 +4,7 @@ import cors from "cors"
 import helmet from "helmet"
 import mongoose from "mongoose"
 import router from "./routes"
+import BucketService from "./controllers/bucket"
 
 // Setup
 dotenv.config()
@@ -39,7 +40,19 @@ app.get("/", (req: Request, res: Response) => {
 })
 
 // Start Server
-app.listen(port, () => {
+app.listen(port, async () => {
+  try {
+    const response = await BucketService.getAll()
+    if (response.buckets.length === 0) {
+      await BucketService.create({ name: "Todo", index: 0 } as any)
+      await BucketService.create({ name: "In Progress", index: 1 } as any)
+      await BucketService.create({ name: "In Review", index: 2 } as any)
+      await BucketService.create({ name: "Done", index: 3 } as any)
+    }
+  } catch (error) {
+    console.log(error)
+  }
+
   console.log(`Server is listening on ${port}`)
 })
 

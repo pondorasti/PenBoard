@@ -3,6 +3,7 @@ version: "3.9"
 services:
   mongodb:
     image: mongo
+    container_name: mongodb
     restart: unless-stopped
     env_file: ./.env
     environment:
@@ -13,10 +14,11 @@ services:
     volumes:
       - db:/data/db
 
-  app:
+  backend:
+    build: ./backend
+    container_name: backend
     depends_on:
       - mongodb
-    build: ./backend
     restart: unless-stopped
     env_file: ./.env
     ports:
