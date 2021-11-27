@@ -30,7 +30,7 @@ services:
       - DB_NAME=$MONGODB_DATABASE
       - DB_PORT=$MONGODB_DOCKER_PORT
       - BACKEND_DOCKER_PORT=$BACKEND_DOCKER_PORT
-      - BACKEND_ENV=production
+      - NODE_ENV=production
 
   frontend:
     build: ./frontend
@@ -41,6 +41,7 @@ services:
     env_file: .env
     ports:
       - $FRONTEND_LOCAL_PORT:3000
-
+    environment:
+      - NEXT_PUBLIC_BACKEND_URL=$NEXT_PUBLIC_BACKEND_URL
 volumes:
   db:
