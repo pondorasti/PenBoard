@@ -9,7 +9,7 @@ import BucketService from "./controllers/bucket"
 // Setup
 dotenv.config()
 const app = express()
-const port = process.env.NODE_DOCKER_PORT || 8000 // Database Setup
+const port = process.env.BACKEND_DOCKER_PORT || 8001 // Database Setup
 
 // Middlewares
 app.use(express.json())
