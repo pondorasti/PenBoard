@@ -2,8 +2,6 @@
 
 This is a minimalistic kanban board inspired by Trello and Linear, made 100% with TypeScript. The codebase is split up into 2 projects, frontend and backend.
 
-[Video Submission](https://drive.google.com/file/d/13_Qw6K3spX0HxHlUd8QwjOTRczkGQAP6/view?usp=sharing)
-
 ## Local Preview
 
 Rename `.env.sample` from the root of the project into `.env`. All sample environment variables come pre-configured and don't need any editing. Afterward, start all docker services:
